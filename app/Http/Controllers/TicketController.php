@@ -58,4 +58,12 @@ class TicketController extends Controller
         $tickets = Ticket::all();   // or filter based on IT rules
         return view('it.dashboard', compact('tickets'));
     }
+
+    public function userDashboard()
+    {
+        $tickets = Ticket::where('user_id', Auth::id())->get();
+        return view('general.user_dashboard', compact('tickets'));
+    }
+    
+
 }

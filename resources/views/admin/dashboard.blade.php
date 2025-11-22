@@ -1,13 +1,17 @@
-<h1>Admin Dashboard</h1>
-<a href="{{ route('logout') }}">Logout</a>
+@extends('layouts.app')
 
-<h2>All Tickets</h2>
+@section('title', 'Admin Dashboard')
+
+@section('content')
+
+<h2 class="mb-3">All Tickets</h2>
+
 @foreach($tickets as $t)
-    <p>
-        <strong>{{ $t->category }}</strong><br>
-        {{ $t->description }}<br>
-        Assigned to: {{ $t->assigned_to ?? 'Not assigned' }}
-    </p>
+    <div class="ticket-card">
+        <p><strong>{{ $t->category }}</strong></p>
+        <p>{{ $t->description }}</p>
+        <p><strong>Assigned to:</strong> {{ $t->assigned_to ?? 'Not assigned' }}</p>
+    </div>
 @endforeach
 
-
+@endsection

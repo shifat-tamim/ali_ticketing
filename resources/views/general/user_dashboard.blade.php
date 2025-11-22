@@ -1,26 +1,30 @@
 @extends('layouts.app')
 
-@section('title', 'My Tickets')
+@section('title', 'User Dashboard')
 
 @section('content')
 
-<!-- NAVBAR (same as other pages) -->
+<!-- NAVBAR -->
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm rounded px-3 py-2 mb-4">
     <div class="container-fluid">
 
-        <a class="navbar-brand d-flex align-items-center" href="{{ route('user.dashboard') }}">
+        <!-- Logo Left -->
+        <a class="navbar-brand d-flex align-items-center" href="#">
             <img src="/images/logo.png" alt="Logo" style="height: 45px;">
         </a>
 
+        <!-- Hamburger for Mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
 
+        <!-- Menu Right -->
         <div class="collapse navbar-collapse justify-content-end" id="mainNavbar">
             <ul class="navbar-nav mb-2 mb-lg-0">
 
                 <li class="nav-item">
-                    <a class="nav-link active" href="{{ route('ticket.list') }}">
+                    <a class="nav-link" href="{{ route('ticket.list') }}"
+>
                         <i class="bi bi-list-check"></i> Tickets
                     </a>
                 </li>
@@ -43,47 +47,32 @@
 </nav>
 
 
-<!-- PAGE TITLE -->
-<div class="container" style="max-width: 850px;">
+<!-- BODY CONTENT -->
+<div class="container">
+
     <h3 class="text-center mb-4">Your Tickets</h3>
 
-    <!-- Success Message -->
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
+    @if(isset($tickets) && count($tickets) > 0)
 
-    <!-- TICKET LIST -->
-    @forelse($tickets as $t)
-        <div class="card shadow-sm mb-3">
-            <div class="card-body">
-                <h5 class="card-title"><strong>{{ $t->category }}</strong></h5>
-                <p class="card-text">{{ $t->description }}</p>
-
-                <!-- Attachment -->
-                @if($t->attachment)
-                    <a href="{{ asset('storage/' . $t->attachment) }}" 
-                       class="btn btn-outline-primary btn-sm" target="_blank">
-                        <i class="bi bi-paperclip"></i> View Attachment
-                    </a>
-                @endif
-
-                <!-- Status Badge -->
-                <span class="badge bg-primary float-end mt-1">{{ $t->status ?? 'Pending' }}</span>
+        @foreach($tickets as $ticket)
+            <div class="card shadow-sm mb-3">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>{{ $ticket->category }}</strong></h5>
+                    <p class="card-text">{{ $ticket->description }}</p>
+                    <span class="badge bg-primary">{{ $ticket->status }}</span>
+                </div>
             </div>
-        </div>
-    @empty
+        @endforeach
 
-        <!-- No tickets message -->
+    @else
         <div class="text-center py-5">
-            <h5>No tickets found.</h5>
+            <h5>No tickets created yet.</h5>
             <a href="{{ route('ticket.create') }}" class="btn btn-primary mt-3">
                 Create Your First Ticket
             </a>
         </div>
+    @endif
 
-    @endforelse
 </div>
 
 @endsection

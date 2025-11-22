@@ -4,38 +4,44 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TicketController;
 
-// ---------------------------
-// Authentication
-// ---------------------------
+// ===========================
+// AUTH ROUTES (NO LOGIN NEEDED)
+// ===========================
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->name('login.post');
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// ---------------------------
-// Authenticated routes
-// ---------------------------
-        Route::middleware('auth')->group(function () {
-            Route::get('/', function () {
-            return redirect()->route('login');
-        });
+// ===========================
+// AUTHENTICATED ROUTES
+// ===========================
+Route::middleware('auth')->group(function () {
 
-    // Redirect based on role
+    // Home redirects to dashboard
+    Route::get('/', function () {
+        return redirect()->route('dashboard');
+    });
+
+    // Redirect based on user role
     Route::get('/dashboard', function () {
         $user = auth()->user();
         if ($user->role === 'admin') return redirect()->route('admin.dashboard');
         if ($user->role === 'it') return redirect()->route('it.dashboard');
-        return redirect()->route('ticket.create');
+        return redirect()->route('user.dashboard'); // default user
     })->name('dashboard');
 
-    // Admin dashboard
+    // Normal User Dashboard
+    Route::get('/user/dashboard', [TicketController::class, 'userDashboard'])
+        ->name('user.dashboard');
+
+    // Admin Dashboard (sees all tickets)
     Route::get('/admin/dashboard', [TicketController::class, 'allTickets'])
         ->name('admin.dashboard');
 
-    // ⭐ UPDATED IT DASHBOARD (this line replaces the old one)
+    // IT Dashboard (IT tickets only)
     Route::get('/it/dashboard', [TicketController::class, 'itTickets'])
         ->name('it.dashboard');
 
-    // General user ticket pages
+    // Ticket Routes
     Route::get('/ticket/create', [TicketController::class, 'create'])->name('ticket.create');
     Route::post('/ticket/store', [TicketController::class, 'store'])->name('ticket.store');
     Route::get('/ticket/list', [TicketController::class, 'index'])->name('ticket.list');
