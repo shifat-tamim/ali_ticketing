@@ -46,4 +46,11 @@ Route::middleware('auth')->group(function () {
     Route::post('/ticket/store', [TicketController::class, 'store'])->name('ticket.store');
     Route::get('/ticket/list', [TicketController::class, 'index'])->name('ticket.list');
 
+    Route::get('/ticket/takeover/{id}', [TicketController::class, 'takeover'])->name('ticket.takeover');
+
+
+    Route::get('/ticket/takeover/{id}', [TicketController::class, 'takeover'])->name('ticket.takeover');
+    Route::get('/ticket/close/{id}', [TicketController::class, 'closeTicket'])->name('ticket.close');
+
+
 });

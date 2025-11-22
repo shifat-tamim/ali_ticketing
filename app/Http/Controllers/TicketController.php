@@ -64,6 +64,34 @@ class TicketController extends Controller
         $tickets = Ticket::where('user_id', Auth::id())->get();
         return view('general.user_dashboard', compact('tickets'));
     }
+
+    public function takeover($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+        $ticket->assigned_to = Auth::id();
+        $ticket->status = "In Progress";
+        $ticket->save();
+
+        return back()->with('success', 'You have taken over this ticket.');
+    }
+
+
+    public function closeTicket($id)
+    {
+        $ticket = Ticket::findOrFail($id);
+
+       
+        if ($ticket->assigned_to != Auth::id()) {
+            return back()->with('error', 'You cannot close this ticket.');
+        }
+
+        $ticket->status = "Closed";
+        $ticket->save();
+
+            return back()->with('success', 'Ticket has been closed.');
+        }
+
+
     
 
 }
