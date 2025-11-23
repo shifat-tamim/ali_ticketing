@@ -68,6 +68,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/tickets', [\App\Http\Controllers\AdminTicketController::class, 'index'])->name('admin.tickets');
     Route::post('/tickets/assign', [\App\Http\Controllers\AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
 
+    Route::get('/admin/tickets', [\App\Http\Controllers\AdminTicketController::class, 'index'])->name('admin.tickets');
+    Route::post('/admin/tickets/assign', [\App\Http\Controllers\AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
+
 });
 
 

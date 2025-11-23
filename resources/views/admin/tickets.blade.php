@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>Ticket ID</th>
-                <th>Subject</th>
+                <th>Description</th>
                 <th>Assigned To</th>
                 <th>Change To</th>
             </tr>
@@ -18,7 +18,7 @@
             @foreach($tickets as $t)
             <tr>
                 <td>{{ $t->id }}</td>
-                <td>{{ $t->subject }}</td>
+                <td class="ticket-description">{{ $t->description }}</td>
                 <td>{{ $t->assignedTo ? $t->assignedTo->name : 'Not Assigned' }}</td>
 
                 <td>

@@ -285,3 +285,9 @@ body {
     margin-left: 220px;
     padding: 20px;
 }
+/* Make description column wider */
+.ticket-description {
+    max-width: 350px;
+    white-space: normal;
+    word-wrap: break-word;
+}

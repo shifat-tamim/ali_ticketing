@@ -38,30 +38,37 @@ class TicketController extends Controller
         return redirect()->back()->with('success', 'Ticket created successfully!');
     }
 
-    // Show tickets for logged-in user
+    // Show tickets for logged-in user (Most recent first)
     public function index()
     {
-        $tickets = Ticket::where('user_id', Auth::id())->get();
+        $tickets = Ticket::where('user_id', Auth::id())
+                        ->orderBy('created_at', 'DESC')
+                        ->get();
+
         return view('general.ticket_list', compact('tickets')); 
     }
 
-    // Show all tickets for admin
+    // Show all tickets for admin (Most recent first)
     public function allTickets()
     {
-        $tickets = Ticket::all();
+        $tickets = Ticket::orderBy('created_at', 'DESC')->get();
         return view('admin.dashboard', compact('tickets'));
     }
 
-    // ⭐ NEW — Show tickets for IT user
+    // Show tickets for IT user (Most recent first)
     public function itTickets()
     {
-        $tickets = Ticket::all();   // or filter based on IT rules
+        $tickets = Ticket::orderBy('created_at', 'DESC')->get();   // or filter based on IT rules
         return view('it.dashboard', compact('tickets'));
     }
 
+    // User dashboard (Most recent first)
     public function userDashboard()
     {
-        $tickets = Ticket::where('user_id', Auth::id())->get();
+        $tickets = Ticket::where('user_id', Auth::id())
+                         ->orderBy('created_at', 'DESC')
+                         ->get();
+
         return view('general.user_dashboard', compact('tickets'));
     }
 
@@ -75,12 +82,10 @@ class TicketController extends Controller
         return back()->with('success', 'You have taken over this ticket.');
     }
 
-
     public function closeTicket($id)
     {
         $ticket = Ticket::findOrFail($id);
 
-       
         if ($ticket->assigned_to != Auth::id()) {
             return back()->with('error', 'You cannot close this ticket.');
         }
@@ -88,10 +93,6 @@ class TicketController extends Controller
         $ticket->status = "Closed";
         $ticket->save();
 
-            return back()->with('success', 'Ticket has been closed.');
-        }
-
-
-    
-
+        return back()->with('success', 'Ticket has been closed.');
+    }
 }
