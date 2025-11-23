@@ -248,3 +248,40 @@ body {
     border-radius: 8px;
     padding: 10px 20px;
 }
+/* ----------------------------- */
+/* ADMIN DASHBOARD SIDEBAR */
+/* ----------------------------- */
+
+.admin-sidebar {
+    height: 100vh;
+    width: 220px;
+    background: #ffffff;
+    border-right: 1px solid #ddd;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding-top: 60px;
+}
+
+.admin-sidebar h4 {
+    margin-top: -40px;
+}
+
+.admin-sidebar a {
+    display: block;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #007bff;
+    text-decoration: none;
+}
+
+.admin-sidebar a:hover {
+    background: #f0f0f0;
+    text-decoration: none;
+}
+
+/* Content area */
+.admin-content {
+    margin-left: 220px;
+    padding: 20px;
+}

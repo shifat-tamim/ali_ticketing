@@ -52,5 +52,24 @@ Route::middleware('auth')->group(function () {
     Route::get('/ticket/takeover/{id}', [TicketController::class, 'takeover'])->name('ticket.takeover');
     Route::get('/ticket/close/{id}', [TicketController::class, 'closeTicket'])->name('ticket.close');
 
+    //----------------------------
+    // Admin Routes
+    Route::prefix('admin')->middleware(['auth'])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
+
+    // Reports
+    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('admin.reports');
+    Route::post('/reports/search', [\App\Http\Controllers\ReportController::class, 'search'])->name('admin.reports.search');
+
+    // Tickets
+    Route::get('/tickets', [\App\Http\Controllers\AdminTicketController::class, 'index'])->name('admin.tickets');
+    Route::post('/tickets/assign', [\App\Http\Controllers\AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
+
+});
+
+
 
 });
