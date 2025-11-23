@@ -3,9 +3,11 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\AdminTicketController;
+use App\Http\Controllers\ReportController;
 
 // ===========================
-// AUTH ROUTES (NO LOGIN NEEDED)
+// AUTH ROUTES (NO LOGIN REQUIRED)
 // ===========================
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'doLogin'])->name('login.post');
@@ -16,63 +18,52 @@ Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 // ===========================
 Route::middleware('auth')->group(function () {
 
-    // Home redirects to dashboard
+    // Root redirect
     Route::get('/', function () {
         return redirect()->route('dashboard');
     });
 
-    // Redirect based on user role
+    // Main dashboard deciding by role
     Route::get('/dashboard', function () {
         $user = auth()->user();
-        if ($user->role === 'admin') return redirect()->route('admin.dashboard');
+
+        if ($user->role === 'admin') return redirect()->route('admin.tickets');
         if ($user->role === 'it') return redirect()->route('it.dashboard');
-        return redirect()->route('user.dashboard'); // default user
+
+        return redirect()->route('user.dashboard');
     })->name('dashboard');
 
-    // Normal User Dashboard
-    Route::get('/user/dashboard', [TicketController::class, 'userDashboard'])
-        ->name('user.dashboard');
-
-    // Admin Dashboard (sees all tickets)
-    Route::get('/admin/dashboard', [TicketController::class, 'allTickets'])
-        ->name('admin.dashboard');
-
-    // IT Dashboard (IT tickets only)
-    Route::get('/it/dashboard', [TicketController::class, 'itTickets'])
-        ->name('it.dashboard');
-
-    // Ticket Routes
+    // ==============================
+    // NORMAL USER ROUTES
+    // ==============================
+    Route::get('/user/dashboard', [TicketController::class, 'userDashboard'])->name('user.dashboard');
     Route::get('/ticket/create', [TicketController::class, 'create'])->name('ticket.create');
     Route::post('/ticket/store', [TicketController::class, 'store'])->name('ticket.store');
     Route::get('/ticket/list', [TicketController::class, 'index'])->name('ticket.list');
-
-    Route::get('/ticket/takeover/{id}', [TicketController::class, 'takeover'])->name('ticket.takeover');
-
-
     Route::get('/ticket/takeover/{id}', [TicketController::class, 'takeover'])->name('ticket.takeover');
     Route::get('/ticket/close/{id}', [TicketController::class, 'closeTicket'])->name('ticket.close');
 
-    //----------------------------
-    // Admin Routes
-    Route::prefix('admin')->middleware(['auth'])->group(function () {
+    // ==============================
+    // IT USER ROUTES
+    // ==============================
+    Route::get('/it/dashboard', [TicketController::class, 'itTickets'])->name('it.dashboard');
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('admin.dashboard');
+    // ==============================
+    // ADMIN ROUTES
+    // ==============================
+    Route::prefix('admin')->group(function () {
 
-    // Reports
-    Route::get('/reports', [\App\Http\Controllers\ReportController::class, 'index'])->name('admin.reports');
-    Route::post('/reports/search', [\App\Http\Controllers\ReportController::class, 'search'])->name('admin.reports.search');
+        // Redirect any dashboard call to tickets
+        Route::get('/dashboard', function () {
+            return redirect()->route('admin.tickets');
+        })->name('admin.dashboard');
 
-    // Tickets
-    Route::get('/tickets', [\App\Http\Controllers\AdminTicketController::class, 'index'])->name('admin.tickets');
-    Route::post('/tickets/assign', [\App\Http\Controllers\AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
+        // Admin Tickets
+        Route::get('/tickets', [AdminTicketController::class, 'index'])->name('admin.tickets');
+        Route::post('/tickets/assign', [AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
 
-    Route::get('/admin/tickets', [\App\Http\Controllers\AdminTicketController::class, 'index'])->name('admin.tickets');
-    Route::post('/admin/tickets/assign', [\App\Http\Controllers\AdminTicketController::class, 'assign'])->name('admin.tickets.assign');
-
-});
-
-
-
+        // Admin Reports
+        Route::get('/reports', [ReportController::class, 'index'])->name('admin.reports');
+        Route::post('/reports/search', [ReportController::class, 'search'])->name('admin.reports.search');
+    });
 });

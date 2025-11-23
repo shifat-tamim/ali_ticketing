@@ -26,21 +26,8 @@ class Ticket extends Model
     }
 
     // The IT user assigned to handle the ticket
-    public function itUser()
-    {
-        return $this->belongsTo(User::class, 'assigned_to');
-    }
-
-    //-------------------
-
-        public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
     public function assignedTo()
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
-
 }

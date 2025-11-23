@@ -42,8 +42,22 @@
     @forelse($tickets as $t)
         <div class="card shadow-sm mb-3">
             <div class="card-body">
+                
                 <h5 class="card-title"><strong>{{ $t->category }}</strong></h5>
                 <p class="card-text">{{ $t->description }}</p>
+
+                <!-- STATUS BADGE -->
+                <p>
+                    @if($t->status == 'Pending')
+                        <span class="status-badge status-pending">Pending</span>
+                    @elseif($t->status == 'In Progress')
+                        <span class="status-badge status-progress">In Progress</span>
+                    @elseif($t->status == 'Closed')
+                        <span class="status-badge status-closed">Closed</span>
+                    @else
+                        <span class="status-badge status-other">{{ $t->status }}</span>
+                    @endif
+                </p>
 
                 <!-- Attachment -->
                 @if($t->attachment)
@@ -53,14 +67,16 @@
                     </a>
                 @endif
 
-                <!-- Assigned IT User -->
+                <!-- Ticket Actions & Assignment -->
                 @if(is_null($t->assigned_to))
                     <a href="{{ route('ticket.takeover', $t->id) }}" 
                        class="btn btn-success btn-sm float-end">
                         <i class="bi bi-hand-index"></i> Takeover
                     </a>
                 @else
-                    <span class="badge bg-info"> Assigned to: {{ $t->itUser->name }} </span>
+                    <span class="badge bg-info">
+                        Assigned to: {{ $t->assignedTo ? $t->assignedTo->name : 'Unknown' }}
+                    </span>
 
                     @if($t->status != "Closed")
                         <a href="{{ route('ticket.close', $t->id) }}" 
@@ -69,8 +85,6 @@
                         </a>
                     @endif
                 @endif
-
-                <span class="badge bg-secondary float-end mt-1 me-2">{{ $t->status ?? 'Pending' }}</span>
 
             </div>
         </div>

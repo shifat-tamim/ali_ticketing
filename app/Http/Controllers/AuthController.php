@@ -48,10 +48,13 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if ($user->role === 'admin') {
-            return redirect('/admin/dashboard');
-        } elseif ($user->role === 'it') {
+            // ⬅️ Now redirecting admin directly to Tickets Page
+            return redirect()->route('admin.tickets');
+        } 
+        elseif ($user->role === 'it') {
             return redirect('/it/dashboard');
-        } else {
+        } 
+        else {
             return redirect('/ticket/create');
         }
     }
